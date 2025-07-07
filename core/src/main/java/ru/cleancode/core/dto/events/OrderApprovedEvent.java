@@ -1,22 +1,16 @@
-package by.javaguru.core.dto.events;
+package ru.cleancode.core.dto.events;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class OrderApprovedEvent {
     private UUID orderId;
-
-    public OrderApprovedEvent() {
-    }
-
-    public OrderApprovedEvent(UUID orderId) {
-        this.orderId = orderId;
-    }
-
-    public UUID getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(UUID orderId) {
-        this.orderId = orderId;
-    }
 }

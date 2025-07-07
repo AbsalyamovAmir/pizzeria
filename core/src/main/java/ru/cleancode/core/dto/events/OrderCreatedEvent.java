@@ -1,52 +1,19 @@
-package by.javaguru.core.dto.events;
+package ru.cleancode.core.dto.events;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class OrderCreatedEvent {
     private UUID orderId;
     private UUID customerId;
     private UUID productId;
     private Integer productQuantity;
-
-    public OrderCreatedEvent() {
-    }
-
-    public OrderCreatedEvent(UUID orderId, UUID customerId, UUID productId, Integer productQuantity) {
-        this.orderId = orderId;
-        this.customerId = customerId;
-        this.productId = productId;
-        this.productQuantity = productQuantity;
-    }
-
-    public UUID getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(UUID orderId) {
-        this.orderId = orderId;
-    }
-
-    public UUID getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(UUID customerId) {
-        this.customerId = customerId;
-    }
-
-    public UUID getProductId() {
-        return productId;
-    }
-
-    public void setProductId(UUID productId) {
-        this.productId = productId;
-    }
-
-    public Integer getProductQuantity() {
-        return productQuantity;
-    }
-
-    public void setProductQuantity(Integer productQuantity) {
-        this.productQuantity = productQuantity;
-    }
 }

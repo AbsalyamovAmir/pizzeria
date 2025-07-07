@@ -1,8 +1,8 @@
-package by.javaguru.products.dao.jpa.repository;
+package ru.cleancode.productservice.jpa.repository;
 
-import by.javaguru.products.dao.jpa.entity.ProductEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import ru.cleancode.productservice.jpa.entity.ProductEntity;
 
 import java.util.UUID;
 

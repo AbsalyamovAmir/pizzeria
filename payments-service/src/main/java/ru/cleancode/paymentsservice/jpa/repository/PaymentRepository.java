@@ -1,8 +1,8 @@
-package by.javaguru.payments.dao.jpa.repository;
+package ru.cleancode.paymentsservice.jpa.repository;
 
-import by.javaguru.payments.dao.jpa.entity.PaymentEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import ru.cleancode.paymentsservice.jpa.entity.PaymentEntity;
 
 import java.util.UUID;
 

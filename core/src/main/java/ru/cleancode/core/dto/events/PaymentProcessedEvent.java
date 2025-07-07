@@ -1,32 +1,17 @@
-package by.javaguru.core.dto.events;
+package ru.cleancode.core.dto.events;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class PaymentProcessedEvent {
     private UUID orderId;
     private UUID paymentId;
-
-    public PaymentProcessedEvent() {
-    }
-
-    public PaymentProcessedEvent(UUID orderId, UUID paymentId) {
-        this.orderId = orderId;
-        this.paymentId = paymentId;
-    }
-
-    public UUID getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(UUID orderId) {
-        this.orderId = orderId;
-    }
-
-    public UUID getPaymentId() {
-        return paymentId;
-    }
-
-    public void setPaymentId(UUID paymentId) {
-        this.paymentId = paymentId;
-    }
 }

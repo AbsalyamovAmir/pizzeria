@@ -6,8 +6,11 @@ server:
 spring:
   application:
     name: order-service
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:pizza_orders}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:pizza_order}
     username: ${DB_USER:postgres}
     password: ${DB_PASSWORD:0000}
     driver-class-name: org.postgresql.Driver
@@ -31,24 +34,18 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
     topic:
-      order-events: order-events
-      payment-events: payment-events
-      kitchen-events: kitchen-events
-      delivery-events: delivery-events
+      orders:
+        events-name: orders-events
+        command-name: orders-commands
+      products:
+        events-name: products-events
+        command-name: products-commands
+      payments:
+        events-name: payments-events
+        command-name: payments-commands
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.yaml
     enabled: true
-
-services:
-  kitchen:
-    url: ${KITCHEN_SERVICE_URL:http://localhost:8081/kitchen-service}
-    timeout: 5000
-  delivery:
-    url: ${DELIVERY_SERVICE_URL:http://localhost:8082}
-    timeout: 5000
-  payment:
-    url: ${PAYMENT_SERVICE_URL:http://localhost:8083}
-    timeout: 5000
 
 logging:
   level:

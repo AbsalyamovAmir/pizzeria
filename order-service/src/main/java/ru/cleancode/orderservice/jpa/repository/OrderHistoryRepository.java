@@ -1,8 +1,8 @@
-package by.javaguru.orders.dao.jpa.repository;
+package ru.cleancode.orderservice.jpa.repository;
 
-import by.javaguru.orders.dao.jpa.entity.OrderHistoryEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import ru.cleancode.orderservice.jpa.entity.OrderHistoryEntity;
 
 import java.util.List;
 import java.util.UUID;

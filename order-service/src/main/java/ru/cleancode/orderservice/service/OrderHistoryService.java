@@ -1,7 +1,7 @@
-package by.javaguru.orders.service;
+package ru.cleancode.orderservice.service;
 
-import by.javaguru.core.types.OrderStatus;
-import by.javaguru.orders.dto.OrderHistory;
+import ru.cleancode.core.types.OrderStatus;
+import ru.cleancode.orderservice.dto.OrderHistory;
 
 import java.util.List;
 import java.util.UUID;

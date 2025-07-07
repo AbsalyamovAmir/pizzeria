@@ -1,13 +1,13 @@
-package by.javaguru.products.web.controller;
+package ru.cleancode.productservice.controller;
 
-import by.javaguru.core.dto.Product;
-import by.javaguru.products.dto.ProductCreationRequest;
-import by.javaguru.products.dto.ProductCreationResponse;
-import by.javaguru.products.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ru.cleancode.core.dto.Product;
+import ru.cleancode.productservice.dto.ProductCreationRequest;
+import ru.cleancode.productservice.dto.ProductCreationResponse;
+import ru.cleancode.productservice.service.ProductService;
 
 import java.util.List;
 

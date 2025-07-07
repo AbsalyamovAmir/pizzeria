@@ -1,6 +1,6 @@
-package by.javaguru.orders.service;
+package ru.cleancode.orderservice.service;
 
-import by.javaguru.core.dto.Order;
+import ru.cleancode.core.dto.Order;
 
 import java.util.UUID;
 

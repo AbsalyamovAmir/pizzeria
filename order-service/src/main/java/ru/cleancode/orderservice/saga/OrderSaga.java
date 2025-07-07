@@ -1,41 +1,38 @@
-package by.javaguru.orders.saga;
+package ru.cleancode.orderservice.saga;
 
-import by.javaguru.core.dto.commands.*;
-import by.javaguru.core.dto.events.*;
-import by.javaguru.core.types.OrderStatus;
-import by.javaguru.orders.service.OrderHistoryService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
+import ru.cleancode.core.dto.commands.*;
+import ru.cleancode.core.dto.events.*;
+import ru.cleancode.core.types.OrderStatus;
+import ru.cleancode.orderservice.service.OrderHistoryService;
 
 @Component
 @KafkaListener(topics = {
-        "${orders.events.topic.name}",
-        "${products.events.topic.name}",
-        "${payments.events.topic.name}"
+        "${spring.kafka.topic.orders.events-name}",
+        "${spring.kafka.topic.products.events-name}",
+        "${spring.kafka.topic.payments.events-name}"
 })
+@RequiredArgsConstructor
 public class OrderSaga {
 
     private final KafkaTemplate<String, Object> kafkaTemplate;
-    private final String productsCommandsTopicName;
-    private final OrderHistoryService orderHistoryService;
-    private final String paymentsCommandsTopicName;
-    private final String ordersCommandsTopicName;
 
-    public OrderSaga(KafkaTemplate<String, Object> kafkaTemplate,
-                     @Value("${products.commands.topic.name}") String productsCommandsTopicName,
-                     OrderHistoryService orderHistoryService,
-                     @Value("${payments.commands.topic.name}") String paymentsCommandsTopicName,
-                     @Value("${orders.commands.topic.name}") String ordersCommandsTopicName) {
-        this.kafkaTemplate = kafkaTemplate;
-        this.productsCommandsTopicName = productsCommandsTopicName;
-        this.orderHistoryService = orderHistoryService;
-        this.paymentsCommandsTopicName = paymentsCommandsTopicName;
-        this.ordersCommandsTopicName = ordersCommandsTopicName;
-    }
+    private final OrderHistoryService orderHistoryService;
+
+    @Value("${spring.kafka.topic.payments.command-name}")
+    private String paymentsCommandsTopicName;
+
+    @Value("${spring.kafka.topic.orders.command-name}")
+    private String ordersCommandsTopicName;
+
+    @Value("${spring.kafka.topic.products.command-name}")
+    private String productsCommandsTopicName;
 
     @KafkaHandler
     public void handleEvent(@Payload OrderCreatedEvent event) {
@@ -53,8 +50,11 @@ public class OrderSaga {
     @KafkaHandler
     public void handleEvent(@Payload ProductReservedEvent event) {
 
-        ProcessPaymentCommand processPaymentCommand = new ProcessPaymentCommand(event.getOrderId(),
-                event.getProductId(), event.getProductPrice(), event.getProductQuantity());
+        ProcessPaymentCommand processPaymentCommand = new ProcessPaymentCommand(
+                event.getOrderId(),
+                event.getProductId(),
+                event.getProductPrice(),
+                event.getProductQuantity());
         kafkaTemplate.send(paymentsCommandsTopicName, processPaymentCommand);
     }
 
@@ -73,7 +73,8 @@ public class OrderSaga {
     @KafkaHandler
     public void handleEvent(@Payload PaymentFailedEvent event) {
         CancelProductReservationCommand cancelProductReservationCommand =
-                new CancelProductReservationCommand(event.getProductId(),
+                new CancelProductReservationCommand(
+                        event.getProductId(),
                         event.getOrderId(),
                         event.getProductQuantity());
         kafkaTemplate.send(productsCommandsTopicName, cancelProductReservationCommand);

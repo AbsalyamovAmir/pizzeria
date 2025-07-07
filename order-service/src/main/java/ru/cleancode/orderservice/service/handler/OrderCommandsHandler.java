@@ -1,22 +1,20 @@
-package by.javaguru.orders.service.handler;
+package ru.cleancode.orderservice.service.handler;
 
-import by.javaguru.core.dto.commands.ApproveOrderCommand;
-import by.javaguru.core.dto.commands.RejectOrderCommand;
-import by.javaguru.orders.service.OrderService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
+import ru.cleancode.core.dto.commands.ApproveOrderCommand;
+import ru.cleancode.core.dto.commands.RejectOrderCommand;
+import ru.cleancode.orderservice.service.OrderService;
 
 @Component
-@KafkaListener(topics="${orders.commands.topic.name}")
+@KafkaListener(topics="${spring.kafka.topic.orders.command-name}")
+@RequiredArgsConstructor
 public class OrderCommandsHandler {
 
     private final OrderService orderService;
-
-    public OrderCommandsHandler(OrderService orderService) {
-        this.orderService = orderService;
-    }
 
     @KafkaHandler
     public void handleCommand(@Payload ApproveOrderCommand approveOrderCommand) {

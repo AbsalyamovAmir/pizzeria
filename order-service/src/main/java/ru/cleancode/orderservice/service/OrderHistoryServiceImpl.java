@@ -1,11 +1,13 @@
-package by.javaguru.orders.service;
+package ru.cleancode.orderservice.service;
 
-import by.javaguru.core.types.OrderStatus;
-import by.javaguru.orders.dao.jpa.entity.OrderHistoryEntity;
-import by.javaguru.orders.dao.jpa.repository.OrderHistoryRepository;
-import by.javaguru.orders.dto.OrderHistory;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import ru.cleancode.core.types.OrderStatus;
+import ru.cleancode.orderservice.dto.OrderHistory;
+import ru.cleancode.orderservice.jpa.entity.OrderHistoryEntity;
+import ru.cleancode.orderservice.jpa.repository.OrderHistoryRepository;
+import ru.cleancode.orderservice.utils.HistoryMapper;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -13,12 +15,10 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class OrderHistoryServiceImpl implements OrderHistoryService {
     private final OrderHistoryRepository orderHistoryRepository;
-
-    public OrderHistoryServiceImpl(OrderHistoryRepository orderHistoryRepository) {
-        this.orderHistoryRepository = orderHistoryRepository;
-    }
+    private final HistoryMapper historyMapper;
 
     @Override
     public void add(UUID orderId, OrderStatus orderStatus) {
@@ -31,11 +31,7 @@ public class OrderHistoryServiceImpl implements OrderHistoryService {
 
     @Override
     public List<OrderHistory> findByOrderId(UUID orderId) {
-        var entities = orderHistoryRepository.findByOrderId(orderId);
-        return entities.stream().map(entity -> {
-            OrderHistory orderHistory = new OrderHistory();
-            BeanUtils.copyProperties(entity, orderHistory);
-            return orderHistory;
-        }).toList();
+        List<OrderHistoryEntity> entities = orderHistoryRepository.findByOrderId(orderId);
+        return entities.stream().map(historyMapper::entityToDto).toList();
     }
 }

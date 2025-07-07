@@ -1,23 +1,23 @@
-package by.javaguru.products.service;
+package ru.cleancode.productservice.service;
 
-import by.javaguru.core.dto.Product;
-import by.javaguru.core.exceptions.ProductInsufficientQuantityException;
-import by.javaguru.products.dao.jpa.entity.ProductEntity;
-import by.javaguru.products.dao.jpa.repository.ProductRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import ru.cleancode.core.dto.Product;
+import ru.cleancode.core.exceptions.ProductInsufficientQuantityException;
+import ru.cleancode.productservice.jpa.entity.ProductEntity;
+import ru.cleancode.productservice.jpa.repository.ProductRepository;
+import ru.cleancode.productservice.util.ProductMapper;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
-
-    public ProductServiceImpl(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
+    private final ProductMapper productMapper;
 
     @Override
     public Product reserve(Product desiredProduct, UUID orderId) {
@@ -29,8 +29,7 @@ public class ProductServiceImpl implements ProductService {
         productEntity.setQuantity(productEntity.getQuantity() - desiredProduct.getQuantity());
         productRepository.save(productEntity);
 
-        var reservedProduct = new Product();
-        BeanUtils.copyProperties(productEntity, reservedProduct);
+        Product reservedProduct = productMapper.entityToDto(productEntity);
         reservedProduct.setQuantity(desiredProduct.getQuantity());
         return reservedProduct;
     }
@@ -44,19 +43,14 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product save(Product product) {
-        ProductEntity productEntity = new ProductEntity();
-        productEntity.setName(product.getName());
-        productEntity.setPrice(product.getPrice());
-        productEntity.setQuantity(product.getQuantity());
-        productRepository.save(productEntity);
-
-        return new Product(productEntity.getId(), product.getName(), product.getPrice(), product.getQuantity());
+        ProductEntity productEntity = productRepository.save(productMapper.productDtoToEntity(product));
+        return productMapper.entityToDto(productEntity);
     }
 
     @Override
     public List<Product> findAll() {
         return productRepository.findAll().stream()
-                .map(entity -> new Product(entity.getId(), entity.getName(), entity.getPrice(), entity.getQuantity()))
+                .map(productMapper::entityToDto)
                 .collect(Collectors.toList());
     }
 }

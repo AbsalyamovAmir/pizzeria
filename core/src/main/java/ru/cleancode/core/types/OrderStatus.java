@@ -1,4 +1,4 @@
-package by.javaguru.core.types;
+package ru.cleancode.core.types;
 
 public enum OrderStatus {
     CREATED,

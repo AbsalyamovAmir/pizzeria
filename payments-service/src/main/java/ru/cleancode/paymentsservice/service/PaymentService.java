@@ -1,6 +1,6 @@
-package by.javaguru.payments.service;
+package ru.cleancode.paymentsservice.service;
 
-import by.javaguru.core.dto.Payment;
+import ru.cleancode.core.dto.Payment;
 
 import java.util.List;
 

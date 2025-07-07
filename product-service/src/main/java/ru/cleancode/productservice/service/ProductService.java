@@ -1,6 +1,6 @@
-package by.javaguru.products.service;
+package ru.cleancode.productservice.service;
 
-import by.javaguru.core.dto.Product;
+import ru.cleancode.core.dto.Product;
 
 import java.util.List;
 import java.util.UUID;

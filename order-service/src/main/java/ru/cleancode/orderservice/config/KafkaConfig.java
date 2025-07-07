@@ -1,4 +1,4 @@
-package by.javaguru.orders.config;
+package ru.cleancode.orderservice.config;
 
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,13 +11,13 @@ import org.springframework.kafka.core.ProducerFactory;
 @Configuration
 public class KafkaConfig {
 
-    @Value("${orders.events.topic.name}")
+    @Value("${spring.kafka.topic.orders.events-name}")
     private String ordersEventsTopicName;
-    @Value("${products.commands.topic.name}")
+    @Value("${spring.kafka.topic.products.command-name}")
     private String productsCommandsTopicName;
-    @Value("${payments.commands.topic.name}")
+    @Value("${spring.kafka.topic.payments.command-name}")
     private String paymentsCommandsTopicName;
-    @Value("${orders.commands.topic.name}")
+    @Value("${spring.kafka.topic.orders.command-name}")
     private String ordersCommandsTopicName;
 
     private final static Integer TOPIC_REPLICATION_FACTOR=3;

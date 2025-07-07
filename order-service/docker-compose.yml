@@ -8,6 +8,6 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_DB=pizza_orders
+      - POSTGRES_DB=pizza_order
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=0000

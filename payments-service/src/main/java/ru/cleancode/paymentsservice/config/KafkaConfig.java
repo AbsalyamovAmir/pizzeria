@@ -1,4 +1,4 @@
-package by.javaguru.payments.config;
+package ru.cleancode.paymentsservice.config;
 
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,7 +11,7 @@ import org.springframework.kafka.core.ProducerFactory;
 @Configuration
 public class KafkaConfig {
 
-    @Value("${payments.events.topic.name}")
+    @Value("${spring.kafka.topic.payments.events-name}")
     private String paymentsEventsTopicName;
     private final static Integer TOPIC_REPLICATION_FACTOR=3;
     private final static Integer TOPIC_PARTITIONS=3;

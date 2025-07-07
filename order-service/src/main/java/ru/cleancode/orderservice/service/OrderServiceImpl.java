@@ -1,38 +1,33 @@
-package by.javaguru.orders.service;
+package ru.cleancode.orderservice.service;
 
-import by.javaguru.core.dto.Order;
-import by.javaguru.core.dto.events.OrderApprovedEvent;
-import by.javaguru.core.dto.events.OrderCreatedEvent;
-import by.javaguru.core.types.OrderStatus;
-import by.javaguru.orders.dao.jpa.entity.OrderEntity;
-import by.javaguru.orders.dao.jpa.repository.OrderRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import ru.cleancode.core.dto.Order;
+import ru.cleancode.core.dto.events.OrderApprovedEvent;
+import ru.cleancode.core.dto.events.OrderCreatedEvent;
+import ru.cleancode.core.types.OrderStatus;
+import ru.cleancode.orderservice.jpa.entity.OrderEntity;
+import ru.cleancode.orderservice.jpa.repository.OrderRepository;
+import ru.cleancode.orderservice.utils.OrderMapper;
 
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final KafkaTemplate<String, Object> kafkaTemplate;
-    private final String ordersEventsTopicName;
+    private final OrderMapper orderMapper;
 
-    public OrderServiceImpl(OrderRepository orderRepository,
-                            KafkaTemplate<String, Object> kafkaTemplate,
-                            @Value("${orders.events.topic.name}") String ordersEventsTopicName) {
-        this.orderRepository = orderRepository;
-        this.kafkaTemplate = kafkaTemplate;
-        this.ordersEventsTopicName = ordersEventsTopicName;
-    }
+    @Value("${spring.kafka.topic.orders.events-name}")
+    private String ordersEventsTopicName;
 
     @Override
     public Order placeOrder(Order order) {
-        OrderEntity entity = new OrderEntity();
-        entity.setCustomerId(order.getCustomerId());
-        entity.setProductId(order.getProductId());
-        entity.setProductQuantity(order.getProductQuantity());
+        OrderEntity entity = orderMapper.dtoToEntity(order);
         entity.setStatus(OrderStatus.CREATED);
         orderRepository.save(entity);
 
@@ -44,12 +39,7 @@ public class OrderServiceImpl implements OrderService {
         );
         kafkaTemplate.send(ordersEventsTopicName, placedOrder);
 
-        return new Order(
-                entity.getId(),
-                entity.getCustomerId(),
-                entity.getProductId(),
-                entity.getProductQuantity(),
-                entity.getStatus());
+        return orderMapper.entityToDto(entity);
     }
 
     @Override

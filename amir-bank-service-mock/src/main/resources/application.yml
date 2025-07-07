@@ -1,0 +1,12 @@
+server:
+  port: 8083
+  servlet:
+    context-path: /bank-service
+
+
+spring:
+  application:
+    name: amir-bank-service-mock
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true

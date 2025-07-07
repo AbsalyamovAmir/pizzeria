@@ -1,4 +1,4 @@
-package by.javaguru.payments.service;
+package ru.cleancode.paymentsservice.service;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;

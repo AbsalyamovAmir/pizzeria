@@ -1,4 +1,4 @@
-package by.javaguru.core.dto.commands;
+package ru.cleancode.core.dto.commands;
 
 import java.util.UUID;
 

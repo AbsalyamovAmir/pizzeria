@@ -1,4 +1,4 @@
-package by.javaguru.core.exceptions;
+package ru.cleancode.core.exceptions;
 
 import java.util.UUID;
 

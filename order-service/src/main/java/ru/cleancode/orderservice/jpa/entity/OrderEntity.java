@@ -1,62 +1,31 @@
-package by.javaguru.orders.dao.jpa.entity;
+package ru.cleancode.orderservice.jpa.entity;
 
-import by.javaguru.core.types.OrderStatus;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import ru.cleancode.core.types.OrderStatus;
 
 import java.util.UUID;
 
 @Table(name = "orders")
 @Entity
+@Getter
+@Setter
 public class OrderEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    @Column(name = "status")
-    private OrderStatus status;
+
     @Column(name = "customer_id")
     private UUID customerId;
+
     @Column(name = "product_id")
     private UUID productId;
+
     @Column(name = "product_quantity")
     private Integer productQuantity;
 
-    public UUID getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(UUID customerId) {
-        this.customerId = customerId;
-    }
-
-    public OrderStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(OrderStatus status) {
-        this.status = status;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public UUID getProductId() {
-        return productId;
-    }
-
-    public void setProductId(UUID productId) {
-        this.productId = productId;
-    }
-
-    public Integer getProductQuantity() {
-        return productQuantity;
-    }
-
-    public void setProductQuantity(Integer productQuantity) {
-        this.productQuantity = productQuantity;
-    }
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private OrderStatus status;
 }
