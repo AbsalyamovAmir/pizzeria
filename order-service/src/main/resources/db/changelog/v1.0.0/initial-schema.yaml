@@ -28,6 +28,11 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: address
+                  type: TEXT
+                  constraints:
+                    nullable: false
+              - column:
                   name: status
                   type: VARCHAR(50)
                   constraints:

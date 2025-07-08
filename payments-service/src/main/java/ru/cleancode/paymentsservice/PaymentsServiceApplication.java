@@ -6,7 +6,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.retry.annotation.EnableRetry;
 
 @SpringBootApplication
-@EnableFeignClients(basePackages = "ru.cleancode.paymentsservice.client")
+@EnableFeignClients(basePackages = "ru.cleancode.paymentsservice.clients")
 @EnableRetry
 public class PaymentsServiceApplication {
 

@@ -7,16 +7,19 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
-import ru.cleancode.core.dto.commands.*;
-import ru.cleancode.core.dto.events.*;
+import ru.cleancode.core.dtos.Order;
+import ru.cleancode.core.dtos.commands.*;
+import ru.cleancode.core.dtos.events.*;
 import ru.cleancode.core.types.OrderStatus;
-import ru.cleancode.orderservice.service.OrderHistoryService;
+import ru.cleancode.orderservice.services.OrderHistoryService;
+import ru.cleancode.orderservice.services.OrderService;
 
 @Component
 @KafkaListener(topics = {
         "${spring.kafka.topic.orders.events-name}",
         "${spring.kafka.topic.products.events-name}",
-        "${spring.kafka.topic.payments.events-name}"
+        "${spring.kafka.topic.payments.events-name}",
+        "${spring.kafka.topic.deliveries.events-name}"
 })
 @RequiredArgsConstructor
 public class OrderSaga {
@@ -24,6 +27,8 @@ public class OrderSaga {
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
     private final OrderHistoryService orderHistoryService;
+
+    private final OrderService orderService;
 
     @Value("${spring.kafka.topic.payments.command-name}")
     private String paymentsCommandsTopicName;
@@ -33,6 +38,9 @@ public class OrderSaga {
 
     @Value("${spring.kafka.topic.products.command-name}")
     private String productsCommandsTopicName;
+
+    @Value("${spring.kafka.topic.deliveries.command-name}")
+    private String deliveriesCommandsTopicName;
 
     @KafkaHandler
     public void handleEvent(@Payload OrderCreatedEvent event) {
@@ -44,7 +52,8 @@ public class OrderSaga {
         );
 
         kafkaTemplate.send(productsCommandsTopicName, command);
-        orderHistoryService.add(event.getOrderId(), OrderStatus.CREATED);
+        Order order = orderService.updateOrderStatus(event.getOrderId(), OrderStatus.CREATED);
+        orderHistoryService.add(order.getOrderId(), order.getStatus());
     }
 
     @KafkaHandler
@@ -67,7 +76,31 @@ public class OrderSaga {
 
     @KafkaHandler
     public void handleEvent(@Payload OrderApprovedEvent event) {
-        orderHistoryService.add(event.getOrderId(), OrderStatus.APPROVED);
+        Order currentOrder = orderService.getOrderById(event.getOrderId());
+        StartDeliveryCommand startDeliveryCommand = new StartDeliveryCommand(currentOrder.getOrderId(), currentOrder.getAddress());
+        kafkaTemplate.send(deliveriesCommandsTopicName, startDeliveryCommand);
+
+        Order order = orderService.updateOrderStatus(event.getOrderId(), OrderStatus.APPROVED);
+        orderHistoryService.add(order.getOrderId(), order.getStatus());
+    }
+
+    @KafkaHandler
+    public void handleEvent(@Payload ShipmentDispatchedEvent event) {
+        Order order = orderService.updateOrderStatus(event.getOrderId(), OrderStatus.DELIVERING);
+        orderHistoryService.add(order.getOrderId(), order.getStatus());
+
+        DeliveringProccessCommand deliveringProccessCommand = new DeliveringProccessCommand(
+                event.getOrderId(),
+                event.getTrackingNumber(),
+                event.getAddress()
+        );
+        kafkaTemplate.send(deliveriesCommandsTopicName, deliveringProccessCommand);
+    }
+
+    @KafkaHandler
+    public void handleEvent(@Payload ShipmentDeliveredEvent event) {
+        Order order = orderService.updateOrderStatus(event.getOrderId(), OrderStatus.DONE);
+        orderHistoryService.add(order.getOrderId(), order.getStatus());
     }
 
     @KafkaHandler

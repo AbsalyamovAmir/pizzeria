@@ -1,0 +1,43 @@
+server:
+  port: 8084
+  servlet:
+    context-path: /delivering-service
+
+spring:
+  application:
+    name: delivering-service
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5435}/${DB_NAME:pizza_delivery}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:0000}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: delivering-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    topic:
+      deliveries:
+        events-name: deliveries-events
+        command-name: deliveries-commands
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+    enabled: true
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    ru.cleancode.deliveringservice: DEBUG
+  file:
+    name: logs/delivering-service.log

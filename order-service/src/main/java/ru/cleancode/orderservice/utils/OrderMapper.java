@@ -2,10 +2,10 @@ package ru.cleancode.orderservice.utils;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import ru.cleancode.core.dto.Order;
-import ru.cleancode.orderservice.dto.CreateOrderRequest;
-import ru.cleancode.orderservice.dto.CreateOrderResponse;
-import ru.cleancode.orderservice.jpa.entity.OrderEntity;
+import ru.cleancode.core.dtos.Order;
+import ru.cleancode.orderservice.dtos.CreateOrderRequest;
+import ru.cleancode.orderservice.dtos.CreateOrderResponse;
+import ru.cleancode.orderservice.entities.OrderEntity;
 
 @Mapper(componentModel = "spring")
 public interface OrderMapper {

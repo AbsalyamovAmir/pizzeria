@@ -43,6 +43,9 @@ spring:
       payments:
         events-name: payments-events
         command-name: payments-commands
+      deliveries:
+        events-name: deliveries-events
+        command-name: deliveries-commands
   liquibase:
     change-log: classpath:/db/changelog/db.changelog-master.yaml
     enabled: true
