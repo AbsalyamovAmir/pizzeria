@@ -22,16 +22,7 @@ public class DeliveryEntity {
     @Column(name = "address")
     private String address;
 
-    @Column(name = "recipient_name")
-    private String recipientName;
-
-    @Column(name = "recipient_phone")
-    private String recipientPhone;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private DeliveryStatus status;
-
-    @Column(name = "tracking_number")
-    private String trackingNumber;
 }

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.cleancode.core.types.OrderStatus;
 
 import java.util.UUID;
 
@@ -16,4 +17,6 @@ public class OrderCreatedEvent {
     private UUID customerId;
     private UUID productId;
     private Integer productQuantity;
+    private String address;
+    private OrderStatus orderStatus;
 }

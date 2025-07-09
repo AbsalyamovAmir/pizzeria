@@ -18,5 +18,6 @@ public class CreateOrderResponse {
     private UUID customerId;
     private UUID productId;
     private Integer productQuantity;
+    private String address;
     private OrderStatus status;
 }

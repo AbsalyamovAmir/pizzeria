@@ -14,6 +14,8 @@ import ru.cleancode.core.types.OrderStatus;
 import ru.cleancode.orderservice.services.OrderHistoryService;
 import ru.cleancode.orderservice.services.OrderService;
 
+import java.util.UUID;
+
 @Component
 @KafkaListener(topics = {
         "${spring.kafka.topic.orders.events-name}",
@@ -52,8 +54,7 @@ public class OrderSaga {
         );
 
         kafkaTemplate.send(productsCommandsTopicName, command);
-        Order order = orderService.updateOrderStatus(event.getOrderId(), OrderStatus.CREATED);
-        orderHistoryService.add(order.getOrderId(), order.getStatus());
+        orderHistoryService.add(event.getOrderId(), event.getOrderStatus());
     }
 
     @KafkaHandler
@@ -114,10 +115,18 @@ public class OrderSaga {
     }
 
     @KafkaHandler
-    public void handleEvent(@Payload ProductReservationCancelledEvent event) {
+    public void handleEvent(@Payload ProductReservationFailedEvent event) {
+        rejectOrder(event.getOrderId());
+    }
 
-        RejectOrderCommand rejectOrderCommand = new RejectOrderCommand(event.getOrderId());
+    @KafkaHandler
+    public void handleEvent(@Payload ProductReservationCancelledEvent event) {
+        rejectOrder(event.getOrderId());
+    }
+
+    private void rejectOrder(UUID event) {
+        RejectOrderCommand rejectOrderCommand = new RejectOrderCommand(event);
         kafkaTemplate.send(ordersCommandsTopicName, rejectOrderCommand);
-        orderHistoryService.add(event.getOrderId(), OrderStatus.REJECTED);
+        orderHistoryService.add(event, OrderStatus.REJECTED);
     }
 }

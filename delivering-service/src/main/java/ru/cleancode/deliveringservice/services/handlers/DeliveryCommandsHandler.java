@@ -8,12 +8,14 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
+import ru.cleancode.core.dtos.Delivery;
 import ru.cleancode.core.dtos.commands.DeliveringProccessCommand;
 import ru.cleancode.core.dtos.commands.StartDeliveryCommand;
 import ru.cleancode.core.dtos.events.ShipmentDeliveredEvent;
 import ru.cleancode.core.dtos.events.ShipmentDeliveringFailedEvent;
 import ru.cleancode.core.dtos.events.ShipmentDispatchedEvent;
 import ru.cleancode.core.exceptions.CourierGotLostExpcetion;
+import ru.cleancode.core.types.DeliveryStatus;
 import ru.cleancode.deliveringservice.services.DeliveryService;
 
 import java.util.UUID;
@@ -31,7 +33,11 @@ public class DeliveryCommandsHandler {
 
     @KafkaHandler
     public void handleEvent(@Payload StartDeliveryCommand startDeliveryCommand) {
-        deliveryService.processDelivery(startDeliveryCommand.getOrderId());
+        Delivery delivery = new Delivery();
+        delivery.setOrderId(startDeliveryCommand.getOrderId());
+        delivery.setAddress(startDeliveryCommand.getAddress());
+        delivery.setStatus(DeliveryStatus.PROCESSING);
+        deliveryService.processDelivery(delivery);
 
         ShipmentDispatchedEvent dispatchedEvent = new ShipmentDispatchedEvent(
                 startDeliveryCommand.getOrderId(),
@@ -56,6 +62,7 @@ public class DeliveryCommandsHandler {
             ShipmentDeliveringFailedEvent shipmentFailedEvent = new ShipmentDeliveringFailedEvent(deliveringProccessCommand.getOrderId(),
                     deliveringProccessCommand.getTrackingNumber(),
                     deliveringProccessCommand.getAddress());
+            deliveryService.failDelivery(deliveringProccessCommand.getOrderId());
             kafkaTemplate.send(deliveriesEventsTopicName, shipmentFailedEvent);
         }
     }

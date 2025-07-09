@@ -15,7 +15,6 @@ public interface OrderMapper {
     Order requestToDto(CreateOrderRequest request);
 
     @Mapping(target = "id", source = "orderId")
-    @Mapping(target = "status", ignore = true)
     OrderEntity dtoToEntity(Order order);
 
     @Mapping(target = "orderId", source = "id")

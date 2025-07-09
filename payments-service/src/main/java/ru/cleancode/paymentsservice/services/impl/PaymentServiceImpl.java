@@ -1,5 +1,6 @@
 package ru.cleancode.paymentsservice.services.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.cleancode.core.dtos.Payment;
@@ -24,6 +25,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentMapper paymentMapper;
 
     @Override
+    @Transactional
     public Payment process(Payment payment) {
         BigDecimal totalPrice = payment.getProductPrice()
                 .multiply(new BigDecimal(payment.getProductQuantity()));
@@ -38,6 +40,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    @Transactional
     public List<Payment> findAll() {
         return paymentRepository.findAll().stream().map(paymentMapper::entityToDto).collect(Collectors.toList());
     }

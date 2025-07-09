@@ -1,4 +1,4 @@
-package ru.cleancode.deliveringservice.dtos;
+package ru.cleancode.core.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,8 +12,9 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class DeliveryResponse {
-    private UUID deliveryId;
+public class Delivery {
+    private UUID id;
     private UUID orderId;
+    private String address;
     private DeliveryStatus status;
 }

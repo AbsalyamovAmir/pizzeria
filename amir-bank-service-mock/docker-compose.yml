@@ -1,0 +1,13 @@
+version: '1.0'
+
+services:
+
+  postgres:
+    image: postgres:11.13
+    container_name: bank-service
+    ports:
+      - "5436:5432"
+    environment:
+      - POSTGRES_DB=bank_mock
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=0000

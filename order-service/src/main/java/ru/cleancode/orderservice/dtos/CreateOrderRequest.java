@@ -21,4 +21,6 @@ public class CreateOrderRequest {
     @NotNull
     @Positive
     private Integer productQuantity;
+    @NotNull
+    private String address;
 }

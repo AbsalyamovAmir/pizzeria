@@ -12,5 +12,7 @@ public interface OrderService {
 
     Order getOrderById(UUID orderId);
 
+    Order saveOrder(Order order);
+
     Order updateOrderStatus(UUID orderId, OrderStatus orderStatus);
 }
